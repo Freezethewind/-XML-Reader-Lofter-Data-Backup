@@ -1,7 +1,9 @@
 # -XML-Reader-Lofter-Data-Backup
 XML readers for xml files of LOFTER users data
 ## Introduction
+
 - 用于整理导出lofter的主页xml日志内的文章和插图
+- 编码为UTF-8，与xml日志编码一致
 - 文章以`txt`格式保存在同路径下的`Articles`文件夹下，`txt`文件包含标题、发表时间、修改时间、Tag、正文、文章内插入的链接、评论
 - 文章内插入的图片保存在同路径下的`Images`文件夹
 - 插图保存在同路径下的`Photos`文件夹，包含每一条lof插图的所有图片，以及用`txt`文件保存该条发表时间、修改时间、Tag、插图描述、插入的链接、评论
