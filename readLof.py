@@ -60,7 +60,17 @@ def requestImg(url, i, title, num_retries=3):
         print(e)
 
 
+if not os.path.exists('Articles'):
+    os.mkdir('Articles')
+else:
+    shutil.rmtree('Articles')
+    os.mkdir('Articles')
 
+if not os.path.exists('Images'):
+    os.mkdir('Images')
+else:
+    shutil.rmtree('Images')
+    os.mkdir('Images')
 
 for item in items:
     itemType = item.getElementsByTagName("type")[0]
@@ -153,17 +163,6 @@ for item in items:
 
 ## save as txt and images
     
-    if not os.path.exists('Articles'):
-        os.mkdir('Articles')
-    else:
-        shutil.rmtree('Articles')
-        os.mkdir('Articles')
-
-    if not os.path.exists('Images'):
-        os.mkdir('Images')
-    else:
-        shutil.rmtree('Images')
-        os.mkdir('Images')
 
     
 

@@ -130,7 +130,11 @@ def requestImg(url, path, num_retries=3):
         print(e)
 
 
-
+if not os.path.exists('Photos'):
+    os.mkdir('Photos')
+else:
+    shutil.rmtree('Photos')
+    os.mkdir('Photos')
 
 
 for item in items:
@@ -209,11 +213,7 @@ for item in items:
     title_list.append(titleText)
     url_list.append(photos)
 
-    if not os.path.exists('Photos'):
-        os.mkdir('Photos')
-    else:
-        shutil.rmtree('Photos')
-        os.mkdir('Photos')
+
 
 
 
