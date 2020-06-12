@@ -11,7 +11,14 @@ import urllib
 import urllib.request
 import imghdr
 import threading
+import types
+import os.path
+from pathlib import Path
+import shutil
 
+global false, null, true
+
+false = null = true = ""
 
 rootwin = Tk()
 rootwin.withdraw()
@@ -40,7 +47,8 @@ pho_list = []
 url_list = []
 title_list = []
 
-
+sameTitle = {}
+scount = 0
 
 
 def get_url():
@@ -65,7 +73,7 @@ def get_url():
 
                 picu = phurl['orign']
                 #req = urllib.request.Request(url=picu, headers=header)
-                #pic = urllib.request.urlopen(req, timeout=10).read()
+                #pic = urllib.request.urlopen(req, timeout=30).read()
 
                 pho_list.append({'pic':picu, 'title':title+'_'+str(count)})
                 count += 1
@@ -152,6 +160,7 @@ for item in items:
     titleText = titleText.replace('?', '-')
     titleText = titleText.replace('<', '-')
     titleText = titleText.replace('>', '-')
+    titleText = titleText.replace('', '')
     
     modifyTime = publishTime
     if item.getElementsByTagName("modifyTime") == []:
@@ -169,10 +178,17 @@ for item in items:
         else:
             tag = tag.childNodes[0].data.split(',')
     #print(tag)
-    content = item.getElementsByTagName("caption")[0].childNodes[0].data
+    #print(type(item.getElementsByTagName("caption")[0]))
+    #print(i)
+    if item.getElementsByTagName("caption") == [] or item.getElementsByTagName("caption")[0].childNodes == []:
+        content = ''
+    else:
+        content = item.getElementsByTagName("caption")[0].childNodes[0].data
+    #print(content)
     content = content.replace('<p>', '')
     content = content.replace('</p>', '')
     content = content.replace('<br />', '\r\n')
+    content = content.replace('', '')
 
     linkSrc = r'href="(.*?)"'
     linkSrc = re.findall(linkSrc, content)
@@ -195,13 +211,16 @@ for item in items:
 
     if not os.path.exists('Photos'):
         os.mkdir('Photos')
+    else:
+        shutil.rmtree('Photos')
+        os.mkdir('Photos')
 
 
 
     #if i == 1:
     #    print(content)
     
-    cList = item.getElementsByTagName("commentList")
+    cList = item.getElementsByTagName("comment")
     comments = []
     for comm in cList:
         pubid = comm.getElementsByTagName("publisherUserId")[0].childNodes[0].data

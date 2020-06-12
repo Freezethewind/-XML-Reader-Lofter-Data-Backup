@@ -10,7 +10,9 @@ import re
 import urllib
 import urllib.request
 import imghdr
-
+import os.path
+from pathlib import Path
+import shutil
 
 
 rootwin = Tk()
@@ -21,6 +23,7 @@ file_path = askopenfilename(title=u'choose xml file', initialdir=(os.path.expand
 
 #print(file_path)
 
+
 DOMTree = xml.dom.minidom.parse(file_path)
 
 rootNode = DOMTree.documentElement
@@ -30,6 +33,8 @@ items = rootNode.getElementsByTagName("PostItem")
 
 i = 0
 
+sameTitle = {}
+scount = 0
 
 def requestImg(url, i, title, num_retries=3):
     header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) \
@@ -39,7 +44,7 @@ def requestImg(url, i, title, num_retries=3):
 
     req = urllib.request.Request(url=url, headers=header)
     try:
-        response = urllib.request.urlopen(req, timeout=5)
+        response = urllib.request.urlopen(req, timeout=20)
         imgfname = title + '-' + str(i)
         conte = response.read()
         imgtype = imghdr.what("", conte)
@@ -89,6 +94,7 @@ for item in items:
     titleText = titleText.replace('?', '-')
     titleText = titleText.replace('<', '-')
     titleText = titleText.replace('>', '-')
+    titleText = titleText.replace('', '')
     
     modifyTime = publishTime
     if item.getElementsByTagName("modifyTime") == []:
@@ -110,7 +116,7 @@ for item in items:
     content = content.replace('<p>', '')
     content = content.replace('</p>', '')
     content = content.replace('<br />', '\r\n')
-
+    content = content.replace('', '')
 
     linkSrc = r'href="(.*?)"'
     linkSrc = re.findall(linkSrc, content)
@@ -128,22 +134,45 @@ for item in items:
 
     #if i == 1:
     #    print(content)
-    cList = item.getElementsByTagName("commentList")
+    #cList = item.getElementsByTagName("commentList")
+    cList = item.getElementsByTagName("comment")
+   # if i == 1:
+        #print(len(cList))
     comments = []
     for comm in cList:
+        
         pubid = comm.getElementsByTagName("publisherUserId")[0].childNodes[0].data
         pubnick = comm.getElementsByTagName("publisherNick")[0].childNodes[0].data
         comcon = comm.getElementsByTagName("content")[0].childNodes[0].data
         comtime = comm.getElementsByTagName("publishTime")[0].childNodes[0].data
         repid = comm.getElementsByTagName("replyToUserId")[0].childNodes[0].data
         comments.append({"pubid":pubid, "pubnick":pubnick, "comcon":comcon, "comtime":comtime, "repid":repid})
+        #print('rua!')
+    #if i == 1:
+        #print(len(comments))
 
 ## save as txt and images
-
+    
     if not os.path.exists('Articles'):
         os.mkdir('Articles')
+    else:
+        shutil.rmtree('Articles')
+        os.mkdir('Articles')
+
     if not os.path.exists('Images'):
         os.mkdir('Images')
+    else:
+        shutil.rmtree('Images')
+        os.mkdir('Images')
+
+    
+
+    if not Path("./Articles/"+titleText+".txt").is_file():
+        sameTitle[titleText] = 0
+    else:
+        sameTitle[titleText] += 1
+        titleText += '_'+str(sameTitle[titleText])
+        
 
     with open("./Articles/"+titleText+".txt", "w", encoding="utf-8") as f:
         f.write(titleText+'\n\n')
