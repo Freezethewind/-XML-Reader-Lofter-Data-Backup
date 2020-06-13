@@ -105,6 +105,7 @@ for item in items:
     titleText = titleText.replace('<', '-')
     titleText = titleText.replace('>', '-')
     titleText = titleText.replace('', '')
+    titleText = titleText.replace('\n', '')
     
     modifyTime = publishTime
     if item.getElementsByTagName("modifyTime") == []:
@@ -155,6 +156,7 @@ for item in items:
         pubnick = comm.getElementsByTagName("publisherNick")[0].childNodes[0].data
         comcon = comm.getElementsByTagName("content")[0].childNodes[0].data
         comtime = comm.getElementsByTagName("publishTime")[0].childNodes[0].data
+        comtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(int(comtime)/1000)))
         repid = comm.getElementsByTagName("replyToUserId")[0].childNodes[0].data
         comments.append({"pubid":pubid, "pubnick":pubnick, "comcon":comcon, "comtime":comtime, "repid":repid})
         #print('rua!')
